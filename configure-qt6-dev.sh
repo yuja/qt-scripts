@@ -18,6 +18,7 @@ export CXXFLAGS=-fno-omit-frame-pointer
     -skip qtmultimedia \
     -skip qtopcua \
     -skip qtpurchasing \
+    -skip qtquickcontrols2 \
     -skip qtvirtualkeyboard \
     -skip qtwebengine \
     -skip qtwebsockets \
