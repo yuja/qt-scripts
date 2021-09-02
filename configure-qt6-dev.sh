@@ -11,7 +11,6 @@ export CXXFLAGS=-fno-omit-frame-pointer
     -developer-build \
     -xcb \
     -nomake examples \
-    -skip qt3d \
     -skip qtcoap \
     -skip qtconnectivity \
     -skip qtgraphicaleffects \
