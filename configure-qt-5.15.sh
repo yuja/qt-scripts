@@ -9,6 +9,7 @@ set -x
     -skip qtconnectivity \
     -skip qtpurchasing \
     -skip qtwebengine \
+    -force-asserts \
     -force-debug-info \
     -separate-debug-info \
     -gdb-index \
