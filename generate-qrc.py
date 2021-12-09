@@ -6,19 +6,25 @@ import os
 import re
 import sys
 
-PROLOGUE = '''
+PROLOGUE = """
 <RCC>
     <qresource prefix="/">
-'''.lstrip('\n')
+""".lstrip(
+    "\n"
+)
 
-EPILOGUE = '''
+EPILOGUE = """
     </qresource>
 </RCC>
-'''.lstrip('\n')
+""".lstrip(
+    "\n"
+)
 
-ITEM = '''
+ITEM = """
         <file>{name}</file>
-'''.lstrip('\n')
+""".lstrip(
+    "\n"
+)
 
 
 def collect_files(paths, include_pat):
@@ -35,16 +41,18 @@ def collect_files(paths, include_pat):
                     continue
                 yield os.path.join(root, f)
 
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('-I', '--include', action='append')
-    ap.add_argument('paths', nargs='+')
+    ap.add_argument("-I", "--include", action="append")
+    ap.add_argument("paths", nargs="+")
     args = ap.parse_args()
     if args.include:
-        include_pat = re.compile('|'.join('(?:%s)' % fnmatch.translate(p)
-                                          for p in args.include))
+        include_pat = re.compile(
+            "|".join("(?:%s)" % fnmatch.translate(p) for p in args.include)
+        )
     else:
-        include_pat = re.compile(r'.*')
+        include_pat = re.compile(r".*")
     files = sorted(map(os.path.relpath, collect_files(args.paths, include_pat)))
 
     sys.stdout.write(PROLOGUE)
@@ -53,5 +61,5 @@ def main():
     sys.stdout.write(EPILOGUE)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
