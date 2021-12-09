@@ -11,13 +11,13 @@ $(dirname "$0")/qt-dev/configure \
     -release \
     -xcb \
     -nomake examples \
-    -skip qt3d \
     -skip qtcoap \
     -skip qtconnectivity \
     -skip qtgraphicaleffects \
     -skip qtlocation \
     -skip qtopcua \
     -skip qtpurchasing \
+    -skip qtquickcontrols2 \
     -skip qtvirtualkeyboard \
     -skip qtwebengine \
     -skip qtwebsockets \
