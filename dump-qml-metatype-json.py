@@ -56,6 +56,8 @@ def extract_name(node: ast.expr) -> Optional[str]:
         return node.id
     if isinstance(node, ast.Call):
         return extract_name(node.func)
+    if isinstance(node, ast.Attribute):
+        return f"{extract_name(node.value)}.{node.attr}"
 
 
 def process_file(name) -> Dict[str, Any]:
@@ -99,8 +101,7 @@ def maybe_process_class_def(class_node: ast.ClassDef) -> Optional[Dict[str, Any]
         {"access": "public", "name": extract_name(n)} for n in class_node.bases
     ]
 
-    # TODO: collect slots
-    properties_data, signals_data = [], []
+    properties_data, signals_data, slots_data = [], [], []
     for node in class_node.body:
         if isinstance(node, ast.Assign):
             d = maybe_process_signal_assign(node)
@@ -110,6 +111,11 @@ def maybe_process_class_def(class_node: ast.ClassDef) -> Optional[Dict[str, Any]
             d = maybe_process_property_func_def(node)
             if d:
                 properties_data.append(d)
+                continue
+            d = maybe_process_slot_func_def(node)
+            if d:
+                slots_data.append(d)
+                continue
 
     return {
         "className": class_node.name,
@@ -119,6 +125,7 @@ def maybe_process_class_def(class_node: ast.ClassDef) -> Optional[Dict[str, Any]
         "object": True,
         "properties": properties_data,
         "signals": signals_data,
+        "slots": slots_data,
     }
 
 
@@ -166,6 +173,29 @@ def maybe_process_property_func_def(
             property_data["notify"] = extract_name(node.value)
 
     return property_data
+
+
+def maybe_process_slot_func_def(func_node: ast.FunctionDef) -> Optional[Dict[str, Any]]:
+    if func_node.name.startswith("_"):
+        return  # ignore private method
+    scall_node = next(
+        (n for n in func_node.decorator_list if extract_name(n) == "Slot"), None
+    )
+    if not scall_node:
+        return
+
+    arguments_data = []
+    pos_args = (func_node.args.posonlyargs + func_node.args.args)[1:]  # drop self
+    for fnode, snode in zip(pos_args, scall_node.args):
+        arguments_data.append(
+            {"name": fnode.arg, "type": map_to_qt_type(extract_name(snode))}
+        )
+
+    return {
+        "name": func_node.name,
+        "arguments": arguments_data,
+        "returnType": "void",  # TODO
+    }
 
 
 def main():
