@@ -46,6 +46,11 @@ def map_to_qt_type(py_name: str) -> str:
     }.get(py_name, py_name)
 
 
+def extract_constant(node: ast.expr) -> Any:
+    if isinstance(node, ast.Constant):
+        return node.value
+
+
 def extract_name(node: ast.expr) -> Optional[str]:
     if isinstance(node, ast.Name):
         return node.id
@@ -74,10 +79,21 @@ def maybe_process_class_def(class_node: ast.ClassDef) -> Optional[Dict[str, Any]
     if not any(extract_name(n) == "QmlElement" for n in class_node.decorator_list):
         return
 
-    # TODO: process Qml*() decorators
     class_infos_data = [
         {"name": "QML.Element", "value": "auto"},
     ]
+    for node in class_node.decorator_list:
+        if extract_name(node) == "QmlUncreatable":
+            assert isinstance(node, ast.Call)
+            assert node.args
+            reason = extract_constant(node.args[0])
+            class_infos_data.extend(
+                [
+                    {"name": "QML.Creatable", "value": False},
+                    {"name": "QML.UncreatableReason", "value": reason},
+                ]
+            )
+        # TODO: process Qml*() decorators
 
     super_classes_data = [
         {"access": "public", "name": extract_name(n)} for n in class_node.bases
