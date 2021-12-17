@@ -137,10 +137,17 @@ def maybe_process_signal_assign(assign_node: ast.Assign) -> Optional[Dict[str, A
     signal_name = extract_name(assign_node.targets[0])
     if not signal_name:
         return
+
+    arguments_data = []
+    scall_node = assign_node.value
+    assert isinstance(scall_node, ast.Call)
+    for node in scall_node.args:
+        arguments_data.append({"type": map_to_qt_type(extract_name(node))})
+
     return {
         "access": "public",
         "name": signal_name,
-        "arguments": [],  # TODO
+        "arguments": arguments_data,
         "returnType": "void",  # TODO
     }
 
