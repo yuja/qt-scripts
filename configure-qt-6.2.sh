@@ -26,5 +26,6 @@ $(dirname "$0")/qt-dev/configure \
     -separate-debug-info \
     -gdb-index \
     -linker lld \
+    -ccache \
     -prefix $HOME/opt/qt-6.2-`date -I` \
     "$@"

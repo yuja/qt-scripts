@@ -30,4 +30,5 @@ export CXXFLAGS=-fno-omit-frame-pointer
     -separate-debug-info \
     -gdb-index \
     -linker lld \
+    -ccache \
     "$@"

@@ -14,6 +14,7 @@ set -x
     -separate-debug-info \
     -gdb-index \
     -linker lld \
+    -ccache \
     -prefix $HOME/opt/qt-5.15-`date -I` \
     QMAKE_CFLAGS+=-fno-omit-frame-pointer \
     QMAKE_CXXFLAGS+=-fno-omit-frame-pointer \

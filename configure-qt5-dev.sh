@@ -17,6 +17,7 @@ set -x
     -separate-debug-info \
     -gdb-index \
     -linker lld \
+    -ccache \
     QMAKE_CFLAGS+=-fno-omit-frame-pointer \
     QMAKE_CXXFLAGS+=-fno-omit-frame-pointer \
     "$@"
